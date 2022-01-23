@@ -48,8 +48,7 @@ namespace WpfAndroidInteractor
                 {
                     "index.html",
                     "jquery-1.9.1.min.js",
-                    "jquery.signalR-2.2.3.min.js",
-                    "json2.js"
+                    "jquery.signalR-2.2.3.min.js"
                 }.Select(r => new Route()
                 {
                     Name = "Default",
