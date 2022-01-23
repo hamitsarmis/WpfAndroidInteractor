@@ -76,13 +76,14 @@ namespace WpfAndroidInteractor
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+            ADBInteractor.StopADB();
             Process.GetCurrentProcess().Kill();
         }
 
         private void btnInteract_Click(object sender, RoutedEventArgs e)
         {
             var context = GlobalHost.ConnectionManager.GetHubContext<SignalRServer.MessagePropagator>();
-            var all = context.Clients.All.broadcast("Hello");
+            context.Clients.All.broadcast("Hello");
         }
     }
 }
