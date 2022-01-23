@@ -1,0 +1,51 @@
+﻿<html>
+<head>
+    <title>Very simple http server</title>
+</head>
+<body>
+    <script type="text/javascript" src="assets/js/jquery-1.9.1.min.js"></script>
+    <script src="assets/js/jquery.signalR-2.2.3.min.js"></script>
+    <script src="http://localhost:3002/signalr/hubs"></script>
+    <script type="text/javascript">
+        var messageHandler = {
+
+            propagator: null,
+
+            receive: function (message) {
+                $('#content').empty().html($('<div />')).html(message)
+            },
+
+            send: function (message) {
+                messageHandler.propagator.server.send(message)
+            },
+
+            sendBack: function (message) {
+                messageHandler.propagator.server.sendBack(message)
+            }
+        }
+
+
+        $(function () {
+
+            const connection = $.connection;
+            connection.hub.url = "http://localhost:3002/signalr";
+            messageHandler.propagator = connection.messagePropagator;
+            messageHandler.propagator.client.broadcast = messageHandler.receive;
+            connection.hub.disconnected(function () {
+                interval = setInterval(function () {
+                    if (connection.hub.state === $.signalR.connectionState.disconnected) {
+                        connection.hub.start().done();
+                        clearInterval(interval);
+                    }
+                }, 1000); // Restart connection after 5 seconds.
+            });
+
+            connection.hub.start().done();
+        });
+    </script>
+    <div id="content">
+        <p>Click here to say hello!</p>
+        <button onclick="messageHandler.send('hello')">Hello!!!</button>
+    </div>
+</body>
+</html>
